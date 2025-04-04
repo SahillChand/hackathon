@@ -1,21 +1,53 @@
-import React from "react";
-
+"use client";
+import React, { useEffect, useState } from "react";
 interface Users {
   id: number;
   name: string;
 }
-const Userspage = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users");
-  const users: Users[] = await res.json();
+const Userspage = () => {
+  const queryString = window.location.search;
+  console.log(queryString);
+  //using useState just to refresh the page because the window.location.search was not mounted on the initial render we had to refresh the page.
+  const [state, setState] = useState(0);
+  useEffect(() => {
+    setState(state + 1);
+  }, []);
+  const urlParams = new URLSearchParams(queryString);
+  const stackTraces = urlParams.getAll("stackTrace");
+  console.log(stackTraces);
+  const highlightNumbers = (text: string) => {
+    return text.split(/(\d+\))/).map((part, index) =>
+      /\d+\)/.test(part) ? (
+        <span key={index} className="text-green-400">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+  const atlasErrors = stackTraces.filter((trace) =>
+    trace.startsWith("com.atlas")
+  );
+  const otherErrors = stackTraces.filter(
+    (trace) => !trace.startsWith("com.atlas")
+  );
   return (
-    <main>
-      <h1>All Users</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.name}</li>
+    <div className="min-h-screen px-2 bg-slate-800 text-white font-serif">
+      <h1 className="py-3">Error StackTrace</h1>
+      <ol className="list-decimal list-inside">
+        {atlasErrors.map((atlasError, index) => (
+          <li className="py-1 marker:text-gray-400" key={index}>
+            {highlightNumbers(atlasError)}
+          </li>
         ))}
-      </ul>
-    </main>
+        {otherErrors.map((otherError, index) => (
+          <li className="py-1 marker:text-gray-400" key={index}>
+            <span className="ml-6">{highlightNumbers(otherError)}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 };
 

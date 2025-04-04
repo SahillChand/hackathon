@@ -27,7 +27,7 @@ const Sidebar: React.FC<{
 
       {/* Menu Items */}
       <nav className="flex flex-col space-y-4">
-        <Link href={"../../users"}>
+        <Link href={""}>
           <SidebarItem
             icon={<FiHome />}
             text="Dashboard"
