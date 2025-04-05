@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { errorData } from "../constants";
 import MyBarChart from "./BarChart";
@@ -152,7 +152,21 @@ const countOccurrences = (title: string) => {
 
 const IssueTable: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>(issuesData);
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/alert/v1/alert-monitering"
+        );
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching alerts:", error);
+      }
+    };
 
+    fetchAlerts();
+  }, []);
   // Handle priority change
   const handlePriorityChange = (
     index: number,
@@ -172,7 +186,7 @@ const IssueTable: React.FC = () => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-700 bg-purple-200 text-white rounded-lg">
+      <table className="min-w-full border border-gray-700 bg-purple-700 text-white rounded-lg">
         <thead className="bg-gray-700 text-gray-300">
           <tr>
             <th className="py-3 px-4 text-left font-serif">Issue</th>
@@ -188,7 +202,7 @@ const IssueTable: React.FC = () => {
           {issues.map((issue, index) => (
             <tr
               key={index}
-              className="border-t border-gray-700 hover:bg-purple-300 transition"
+              className="border-t border-gray-700 hover:bg-purple-900 transition"
             >
               <td className="py-3 px-4 font-serif">
                 <Link

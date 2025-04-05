@@ -34,7 +34,7 @@ const Sidebar: React.FC<{
             isExpanded={isExpanded}
           />
         </Link>
-        <Link href={""}>
+        <Link href={"../../conditional"} passHref>
           <SidebarItem
             icon={<FiList />}
             text="Issues"
